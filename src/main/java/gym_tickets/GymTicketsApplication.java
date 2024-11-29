@@ -1,0 +1,13 @@
+package gym_tickets;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class GymTicketsApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(GymTicketsApplication.class, args);
+	}
+
+}
