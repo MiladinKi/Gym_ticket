@@ -21,6 +21,7 @@ public class TicketDTO {
         this.barCode = barCode;
     }
 
+
     public Integer getId() {
         return id;
     }
