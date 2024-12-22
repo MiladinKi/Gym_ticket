@@ -5,9 +5,12 @@ import gym_tickets.configurations.BarCodeGenerator;
 import gym_tickets.configurations.CodeGenerator;
 import gym_tickets.entities.ETicket;
 import gym_tickets.entities.TicketEntity;
+import gym_tickets.entities.UserEntity;
 import gym_tickets.entities.dtos.TicketDTO;
+import gym_tickets.entities.dtos.UserTicketDTO;
 import gym_tickets.mappers.TicketMapper;
 import gym_tickets.repositories.TicketRepository;
+import gym_tickets.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,9 @@ public class TicketService {
 
     @Autowired
     private TicketRepository ticketRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public TicketDTO createTicket(TicketDTO ticketDTO) throws IOException, WriterException {
         TicketEntity ticketEntity = TicketMapper.toEntity(ticketDTO);
@@ -102,4 +108,23 @@ public class TicketService {
     }
 
     }
+
+    public UserTicketDTO assignTicketToUser(Integer userId, TicketDTO ticketDTO) throws IOException, WriterException {
+        UserEntity user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("User with that id: " + userId + " not found!"));
+
+        TicketDTO createdTicket = createTicket(ticketDTO);
+        TicketEntity ticketEntity = TicketMapper.toEntity(createdTicket);
+
+        ticketEntity.setUser(user);
+        ticketRepository.save(ticketEntity);
+
+        UserTicketDTO userTicketDTO = new UserTicketDTO();
+        userTicketDTO.setUsername(user.getUsername());
+        userTicketDTO.setPrice(ticketEntity.getPrice());
+        userTicketDTO.setBarCode(ticketEntity.getBarCode());
+        userTicketDTO.setValidityPeriod(ticketEntity.getValidityPeriod());
+
+        return userTicketDTO;
+
+    };
 }
