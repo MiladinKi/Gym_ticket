@@ -9,7 +9,9 @@ import org.springframework.boot.autoconfigure.ssl.SslProperties;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Base64;
 
 public class BarCodeGenerator {
 
@@ -21,7 +23,12 @@ public class BarCodeGenerator {
 
         return filePath;
 
+    }
 
+    public static String getBarCodeBase64(String barCodeText) throws WriterException, IOException {
+        String filePath = generateBarCode(barCodeText);
+        byte[] imageBytes = Files.readAllBytes(Path.of(filePath));
+        return Base64.getEncoder().encodeToString(imageBytes);
     }
 
 }
