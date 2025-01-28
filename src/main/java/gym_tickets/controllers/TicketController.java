@@ -38,13 +38,15 @@ public class TicketController {
     }
 
     @RequestMapping (method = RequestMethod.POST, path = "/assignTicketToUser/{userId}")
-    public  ResponseEntity<?> assignTicketToUser(@PathVariable Integer userId, @RequestBody TicketDTO ticketDTO/*, @RequestBody UserEntity worker*/) throws WriterException, IOException {
-       try {
-           UserTicketDTO userTicketDTO = ticketService.assignTicketToUser(userId, ticketDTO);
-           return new ResponseEntity<>(userTicketDTO, HttpStatus.CREATED);
-       } catch (IOException | WriterException e){
-           return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.BAD_REQUEST);
-       }
+    public ResponseEntity<?> assignTicketToUser(@PathVariable Integer userId, @RequestBody TicketDTO ticketDTO) {
+        try {
+            UserTicketDTO userTicketDTO = ticketService.assignTicketToUser(userId, ticketDTO);
+            return new ResponseEntity<>(userTicketDTO, HttpStatus.CREATED);
+        } catch (IOException | WriterException e) {
+            return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new RESTError(2, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/workerEarnings")

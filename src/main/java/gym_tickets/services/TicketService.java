@@ -30,6 +30,9 @@ public class TicketService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public TicketDTO createTicket(TicketDTO ticketDTO) throws IOException, WriterException {
         TicketEntity ticketEntity = TicketMapper.toEntity(ticketDTO);
 
@@ -127,6 +130,33 @@ public class TicketService {
         userTicketDTO.setPrice(ticketEntity.getPrice());
         userTicketDTO.setBarCode(ticketEntity.getBarCode());
         userTicketDTO.setValidityPeriod(ticketEntity.getValidityPeriod());
+
+        String barcodeBase64 = BarCodeGenerator.getBarCodeBase64(ticketEntity.getBarCode());
+
+        String subject = "Your ticket details: ";
+        String body = String.format(
+                "<html>" +
+                        "<body>" +
+                        "<h2>Dear %s,</h2>" +
+                        "<p>Thank you for purchasing a ticket! Here are your ticket details:</p>" +
+                        "<img src='data:image/png;base64,%s' alt='Barcode'>" +
+                        "<p><strong>Barcode:</strong> %s</p>" +
+                        "<p><strong>Price:</strong> %.2f</p>" +
+                        "<p><strong>Date of Issue:</strong> %s</p>" +
+                        "<p><strong>Valid Until:</strong> %s</p>" +
+                        "<p>Enjoy your training!</p>" +
+                        "<p>Best regards, <br>Your team</p>" +
+                        "</body>" +
+                        "</html>",
+                user.getUsername(),
+                barcodeBase64, // Barcode kao Base64
+                ticketEntity.getBarCode(),
+                ticketEntity.getPrice(),
+                ticketEntity.getDateOfIssue(),
+                ticketEntity.getValidityPeriod()
+        );
+
+        emailService.sendEmailWithAttachment(user.getEmail(), subject, body);
 
         return userTicketDTO;
 
