@@ -22,6 +22,7 @@ public class UserEntity {
     @JsonManagedReference
     private List<TicketEntity> tickets = new ArrayList<>();
 
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<SupplementEntity> supplements = new ArrayList<>();
@@ -113,4 +114,5 @@ public class UserEntity {
     public void setSupplements(List<SupplementEntity> supplements) {
         this.supplements = supplements;
     }
+
 }

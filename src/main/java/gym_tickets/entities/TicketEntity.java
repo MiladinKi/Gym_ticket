@@ -25,6 +25,7 @@ public class TicketEntity {
     @JsonBackReference
     private UserEntity user;
 
+
     public TicketEntity() {
     }
 
@@ -102,4 +103,6 @@ public class TicketEntity {
     public void setUser(UserEntity user) {
         this.user = user;
     }
+
+
 }

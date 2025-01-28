@@ -8,6 +8,7 @@ import gym_tickets.entities.TicketEntity;
 import gym_tickets.entities.UserEntity;
 import gym_tickets.entities.dtos.TicketDTO;
 import gym_tickets.entities.dtos.UserTicketDTO;
+import gym_tickets.entities.dtos.WorkerEarningsDTO;
 import gym_tickets.mappers.TicketMapper;
 import gym_tickets.repositories.TicketRepository;
 import gym_tickets.repositories.UserRepository;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketService {
@@ -127,4 +131,33 @@ public class TicketService {
         return userTicketDTO;
 
     };
+
+    public WorkerEarningsDTO calculateEarningsByWorkers (LocalDate from, LocalDate to){
+        List<TicketEntity> tickets = ticketRepository.findAllByDateOfIssueBetween(from, to);
+
+        Map<String, Double> earningsByWorker =  tickets.stream().collect(Collectors.groupingBy(
+                ticket -> ticket.getUser().getUsername(),
+                Collectors.summingDouble(TicketEntity::getPrice)
+        ));
+
+        Map<String, Long> ticketsSoldByWorker = tickets.stream().collect(Collectors.groupingBy(
+                ticket -> ticket.getUser().getUsername(),
+                Collectors.counting()
+                )
+        );
+
+        double totalEarnings = tickets.stream().
+                mapToDouble(TicketEntity::getPrice).
+                sum();
+
+        long totalTicketsSold = tickets.size();
+
+        WorkerEarningsDTO workerEarningsDTO = new WorkerEarningsDTO();
+        workerEarningsDTO.setEarningsByWorker(earningsByWorker);
+        workerEarningsDTO.setTotalEarnings(totalEarnings);
+        workerEarningsDTO.setTicketSoldByWorker(ticketsSoldByWorker);
+        workerEarningsDTO.setTotalTicketsSold(totalTicketsSold);
+
+        return workerEarningsDTO;
+    }
 }

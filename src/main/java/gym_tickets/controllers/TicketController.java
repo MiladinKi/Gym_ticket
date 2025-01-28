@@ -3,15 +3,20 @@ package gym_tickets.controllers;
 import com.google.zxing.WriterException;
 import gym_tickets.controllers.utils.RESTError;
 import gym_tickets.entities.TicketEntity;
+import gym_tickets.entities.UserEntity;
 import gym_tickets.entities.dtos.TicketDTO;
 import gym_tickets.entities.dtos.UserTicketDTO;
+import gym_tickets.entities.dtos.WorkerEarningsDTO;
 import gym_tickets.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/gym_tickets/tickets")
@@ -33,7 +38,7 @@ public class TicketController {
     }
 
     @RequestMapping (method = RequestMethod.POST, path = "/assignTicketToUser/{userId}")
-    public  ResponseEntity<?> assignTicketToUser(@PathVariable Integer userId, @RequestBody TicketDTO ticketDTO) throws WriterException, IOException {
+    public  ResponseEntity<?> assignTicketToUser(@PathVariable Integer userId, @RequestBody TicketDTO ticketDTO/*, @RequestBody UserEntity worker*/) throws WriterException, IOException {
        try {
            UserTicketDTO userTicketDTO = ticketService.assignTicketToUser(userId, ticketDTO);
            return new ResponseEntity<>(userTicketDTO, HttpStatus.CREATED);
@@ -42,4 +47,13 @@ public class TicketController {
        }
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/workerEarnings")
+    public ResponseEntity<?> getWorkerEarnings(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDate from, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate to){
+        try {
+            WorkerEarningsDTO earningsDTO = ticketService.calculateEarningsByWorkers(from, to);
+            return new ResponseEntity<>(earningsDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
