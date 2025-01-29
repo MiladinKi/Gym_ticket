@@ -4,6 +4,7 @@ import com.google.zxing.WriterException;
 import gym_tickets.controllers.utils.RESTError;
 import gym_tickets.entities.TicketEntity;
 import gym_tickets.entities.UserEntity;
+import gym_tickets.entities.dtos.BarCodeDTO;
 import gym_tickets.entities.dtos.TicketDTO;
 import gym_tickets.entities.dtos.UserTicketDTO;
 import gym_tickets.entities.dtos.WorkerEarningsDTO;
@@ -57,5 +58,19 @@ public class TicketController {
         } catch (Exception e) {
             return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/barCode/{barCode}")
+    public ResponseEntity<?> findTicketByBarCode(@PathVariable String barCode){
+        try{
+            BarCodeDTO ticket = ticketService.findByBarCode(barCode);
+            if (ticket == null){
+                return new ResponseEntity<>(new RESTError(1, "Ticket not found"), HttpStatus.NOT_FOUND);
+            }
+            return  new ResponseEntity<>(ticket, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.OK);
+        }
+
     }
 }

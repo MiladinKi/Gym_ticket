@@ -6,6 +6,7 @@ import gym_tickets.configurations.CodeGenerator;
 import gym_tickets.entities.ETicket;
 import gym_tickets.entities.TicketEntity;
 import gym_tickets.entities.UserEntity;
+import gym_tickets.entities.dtos.BarCodeDTO;
 import gym_tickets.entities.dtos.TicketDTO;
 import gym_tickets.entities.dtos.UserTicketDTO;
 import gym_tickets.entities.dtos.WorkerEarningsDTO;
@@ -189,5 +190,21 @@ public class TicketService {
         workerEarningsDTO.setTotalTicketsSold(totalTicketsSold);
 
         return workerEarningsDTO;
+    }
+
+    public BarCodeDTO findByBarCode(String barCode){
+            TicketEntity ticket = ticketRepository.findByBarCode(barCode);
+            if(ticket == null){
+                throw new RuntimeException("Ticket with that bar code " + ticket + " not found!");
+            }
+
+        BarCodeDTO barCodeTicket = new BarCodeDTO();
+            barCodeTicket.setBarCode(ticket.getBarCode());
+            barCodeTicket.setUsername(ticket.getUser().getUsername());
+            barCodeTicket.setTicketType(ticket.getTicketType().toString());
+            barCodeTicket.setValidityPeriod(ticket.getValidityPeriod());
+
+            return barCodeTicket;
+            
     }
 }
