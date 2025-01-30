@@ -63,8 +63,22 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/usernames")
     public ResponseEntity<?> findAllUsernames(){
-        List<String> usernames = userService.getAllUsernames();
-        return ResponseEntity.ok(usernames);
+      try {
+          List<String> usernames = userService.getAllUsernames();
+          return new ResponseEntity<>(usernames, HttpStatus.OK);
+      } catch (Exception e) {
+          return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+      }
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/allUsers")
+    public ResponseEntity<?> getAllUsers(){
+       try {
+           List<UserDTO> getAllUsers = userService.getAllUsers();
+           return new ResponseEntity<>(getAllUsers, HttpStatus.OK);
+       } catch (Exception e) {
+           return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+       }
+    }
 }
+

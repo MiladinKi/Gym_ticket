@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -51,6 +53,14 @@ public class UserService {
 
    public List<String> getAllUsernames(){
        return  userRepository.findAllByUsername();
+   }
+
+   public List<UserDTO> getAllUsers(){
+       List <UserEntity> users = (List<UserEntity>) userRepository.findAll();
+
+       return users.stream().
+               map(UserMapper::toDTO).
+               collect(Collectors.toList());
    }
 
 }
