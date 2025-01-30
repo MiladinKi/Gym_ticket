@@ -205,6 +205,6 @@ public class TicketService {
             barCodeTicket.setValidityPeriod(ticket.getValidityPeriod());
 
             return barCodeTicket;
-            
+
     }
 }
