@@ -35,7 +35,7 @@ public class UserController {
             UserDTO userDTO = userService.getUserById(userId);
             return new ResponseEntity<>(userDTO, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(new RESTError(2,  e.getMessage()), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new RESTError(2,  "Exception occur:" + e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -45,7 +45,7 @@ public class UserController {
                 UserDTO updatedUser = userService.modifyUserById(userDTO, userId);
                 return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            return new ResponseEntity<>(new RESTError(3, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RESTError(3, "Exception occur:" + e.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -57,7 +57,7 @@ public class UserController {
             return ResponseEntity.ok("User successfully deleted");
 
         } catch (Exception e) {
-            return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.OK);
+            return new ResponseEntity<>(new RESTError(1, "Exception occur:" + e.getMessage()), HttpStatus.OK);
         }
     }
 
@@ -67,7 +67,7 @@ public class UserController {
           List<String> usernames = userService.getAllUsernames();
           return new ResponseEntity<>(usernames, HttpStatus.OK);
       } catch (Exception e) {
-          return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+          return new ResponseEntity<>(new RESTError(1, "Exception occur:" + e.getMessage()), HttpStatus.BAD_REQUEST);
       }
     }
 
@@ -77,7 +77,7 @@ public class UserController {
            List<UserDTO> getAllUsers = userService.getAllUsers();
            return new ResponseEntity<>(getAllUsers, HttpStatus.OK);
        } catch (Exception e) {
-           return new ResponseEntity<>(new RESTError(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+           return new ResponseEntity<>(new RESTError(1, "Exception occur:" + e.getMessage()), HttpStatus.BAD_REQUEST);
        }
     }
 }
