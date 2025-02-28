@@ -4,6 +4,7 @@ import gym_tickets.controllers.utils.RESTError;
 import gym_tickets.entities.SupplementEntity;
 import gym_tickets.entities.dtos.SupplementDTO;
 import gym_tickets.entities.dtos.SupplementQuantityDTO;
+import gym_tickets.entities.dtos.SupplementSoldDTO;
 import gym_tickets.entities.dtos.SupplementViewDTO;
 import gym_tickets.services.SupplementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,16 @@ public class SupplementController {
             return new ResponseEntity<>(updateSupplement, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new RESTError(1, "Exception occur:" + e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/sold")
+    public ResponseEntity<?> soldSupplement(@RequestBody SupplementSoldDTO supplementSoldDTO){
+        try {
+            SupplementDTO updateSupplement = supplementService.supplementSold(supplementSoldDTO);
+            return new ResponseEntity<>(updateSupplement, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(new RESTError(1, "Exception occur: " + e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }
