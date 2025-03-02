@@ -19,6 +19,7 @@ public class TicketEntity {
     private LocalDate dateOfIssue;
     private LocalDate validityPeriod;
     private String barCode;
+    private String barCodeImageBase64;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user")
@@ -29,7 +30,7 @@ public class TicketEntity {
     public TicketEntity() {
     }
 
-    public TicketEntity(Integer id, ETicket ticketType, Double price, Double discount, LocalDate dateOfIssue, LocalDate validityPeriod, String barCode, UserEntity user) {
+    public TicketEntity(Integer id, ETicket ticketType, Double price, Double discount, LocalDate dateOfIssue, LocalDate validityPeriod, String barCode, String barCodeImageBase64, UserEntity user) {
         this.id = id;
         this.ticketType = ticketType;
         this.price = price;
@@ -37,6 +38,7 @@ public class TicketEntity {
         this.dateOfIssue = dateOfIssue;
         this.validityPeriod = validityPeriod;
         this.barCode = barCode;
+        this.barCodeImageBase64 = barCodeImageBase64;
         this.user = user;
     }
 
@@ -104,5 +106,11 @@ public class TicketEntity {
         this.user = user;
     }
 
+    public String getBarCodeImageBase64() {
+        return barCodeImageBase64;
+    }
 
+    public void setBarCodeImageBase64(String barCodeImageBase64) {
+        this.barCodeImageBase64 = barCodeImageBase64;
+    }
 }

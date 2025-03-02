@@ -56,7 +56,8 @@ public class UserMapper {
         ticketEntity.getDiscount(),
         ticketEntity.getDateOfIssue(),
         ticketEntity.getValidityPeriod(),
-        ticketEntity.getBarCode()
+        ticketEntity.getBarCode(),
+                ticketEntity.getBarCodeImageBase64()
         );
     }
 }

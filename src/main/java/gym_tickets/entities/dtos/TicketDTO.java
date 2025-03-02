@@ -10,8 +10,9 @@ public class TicketDTO {
     private LocalDate dateOfIssue;
     private LocalDate validityPeriod;
     private String barCode;
+    private String barCodeImageBase64;
 
-    public TicketDTO(Integer id, String ticketType, Double price, Double discount, LocalDate dateOfIssue, LocalDate validityPeriod, String barCode) {
+    public TicketDTO(Integer id, String ticketType, Double price, Double discount, LocalDate dateOfIssue, LocalDate validityPeriod, String barCode, String barCodeImageBase64) {
         this.id = id;
         this.ticketType = ticketType;
         this.price = price;
@@ -19,8 +20,8 @@ public class TicketDTO {
         this.dateOfIssue = dateOfIssue;
         this.validityPeriod = validityPeriod;
         this.barCode = barCode;
+        this.barCodeImageBase64 = barCodeImageBase64;
     }
-
 
     public Integer getId() {
         return id;
@@ -76,5 +77,13 @@ public class TicketDTO {
 
     public void setBarCode(String barCode) {
         this.barCode = barCode;
+    }
+
+    public String getBarCodeImageBase64() {
+        return barCodeImageBase64;
+    }
+
+    public void setBarCodeImageBase64(String barCodeImageBase64) {
+        this.barCodeImageBase64 = barCodeImageBase64;
     }
 }

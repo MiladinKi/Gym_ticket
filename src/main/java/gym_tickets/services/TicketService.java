@@ -16,8 +16,13 @@ import gym_tickets.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -79,12 +84,20 @@ public class TicketService {
         String uniqueCode = CodeGenerator.generateUniqueCode();
         ticketEntity.setBarCode(uniqueCode);
         try {
-            BarCodeGenerator.generateBarCode(uniqueCode);
+            BufferedImage barCodeImage = BarCodeGenerator.generateBarCode(uniqueCode);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(barCodeImage, "png", baos);
+            String base64Image = Base64.getEncoder().encodeToString(baos.toByteArray());
+//            BarCodeGenerator.generateBarCode(uniqueCode);
+            TicketDTO responseDTO = TicketMapper.toDTO(ticketEntity);
+            responseDTO.setBarCodeImageBase64(base64Image);
+            ticketRepository.save(ticketEntity);
+//            return TicketMapper.toDTO(ticketEntity);
+            return responseDTO;
         } catch (WriterException | IOException e) {
             throw new RuntimeException("Error generating barcode: " + e.getMessage(), e);
         }
-        ticketRepository.save(ticketEntity);
-        return TicketMapper.toDTO(ticketEntity);
+
     }
 
     public double calculatePriceByTicketPrice(ETicket ticketType, double basePrice){
