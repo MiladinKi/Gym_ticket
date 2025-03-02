@@ -18,6 +18,7 @@ public class TicketMapper {
         ticketEntity.setDateOfIssue(ticketDTO.getDateOfIssue());
         ticketEntity.setValidityPeriod(ticketDTO.getValidityPeriod());
         ticketEntity.setBarCode(ticketDTO.getBarCode());
+        ticketEntity.setBarCodeImageBase64(ticketDTO.getBarCodeImageBase64());
         return ticketEntity;
     }
 
@@ -33,7 +34,8 @@ public class TicketMapper {
                 ticketEntity.getDiscount(),
                 ticketEntity.getDateOfIssue(),
                 ticketEntity.getValidityPeriod(),
-                ticketEntity.getBarCode()
+                ticketEntity.getBarCode(),
+                ticketEntity.getBarCodeImageBase64()
         );
     }
 }
