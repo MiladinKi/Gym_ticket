@@ -12,18 +12,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/entryLog")
+@RequestMapping(path = "/gym_tickets/entryLog")
 public class EntryLogController {
 
     @Autowired
     private EntryLogService entryLogService;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/entry/{ticketId}/{userId}")
+    @RequestMapping(method = RequestMethod.POST, path = "/entry/{ticketId}/{userId}")
     private ResponseEntity<?> registerEntry(@PathVariable Integer ticketId, @PathVariable Integer userId){
         try{
 
         EntryLogDTO entryLog = entryLogService.registerEntry(ticketId, userId);
         return new ResponseEntity<>(entryLog, HttpStatus.OK);
+        } catch (IllegalArgumentException e){
+            return new ResponseEntity<>(new RESTError(1, "Exception occur: " + e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/exit/{ticketId}")
+    private ResponseEntity<?> registerExit(@PathVariable Integer ticketId){
+        try{
+
+            EntryLogDTO exitLog = entryLogService.registerExit(ticketId);
+            return new ResponseEntity<>(exitLog, HttpStatus.OK);
         } catch (IllegalArgumentException e){
             return new ResponseEntity<>(new RESTError(1, "Exception occur: " + e.getMessage()), HttpStatus.BAD_REQUEST);
         }
