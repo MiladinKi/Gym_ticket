@@ -47,6 +47,19 @@ public class EntryLogService {
 
         }
 
+        public EntryLogDTO registerExit (Integer ticketId){
 
-        
+        TicketEntity ticket = ticketRepository.findById(ticketId).
+                orElseThrow(()-> new IllegalArgumentException("Ticket not found!"));
+
+        EntryLogEntity entryLog = entryLogRepository.findTopByTicketOrderByEntryTimeDesc(ticket).
+                orElseThrow(()-> new IllegalStateException("No active visit found!"));
+
+        if(entryLog.getExitTime() != null){
+            throw new IllegalStateException("User has already exited");
+        }
+        entryLog.setExitTime(LocalDateTime.now());
+        EntryLogEntity savedLog = entryLogRepository.save(entryLog);
+        return EntryLogMapper.toDTO(savedLog);
+        }
         }
