@@ -11,8 +11,13 @@ import gym_tickets.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EntryLogService {
@@ -62,4 +67,35 @@ public class EntryLogService {
         EntryLogEntity savedLog = entryLogRepository.save(entryLog);
         return EntryLogMapper.toDTO(savedLog);
         }
+
+        public long getNumberOfEntriesBetween(LocalDateTime startTime, LocalDateTime endTime){
+        return entryLogRepository.countByEntryTimeBetween(startTime, endTime);
         }
+
+        public long getNumberOfExitsBetween(LocalDateTime startTime, LocalDateTime endTime){
+        return entryLogRepository.countByExitTimeBetween(startTime, endTime);
+        }
+
+    public LocalDate getDateWithMostEntries() {
+        List<Object[]> results = entryLogRepository.findDateWithMostEntries();
+        if (results.isEmpty()) {
+            return null; // Ako nema rezultata, vrati null
+        }
+        return ((java.sql.Date) results.get(0)[0]).toLocalDate(); // Konvertujemo u LocalDate
+    }
+
+    public LocalDate getDateWithTheLeastEntries(){
+        List <EntryLogEntity> entries = entryLogRepository.findAll();
+
+        Map<LocalDate, Long> groupByDate = entries.stream().
+                collect(Collectors.groupingBy(e -> e.getEntryTime().toLocalDate(), Collectors.counting()));
+        return groupByDate.entrySet().stream().
+                min(Comparator.comparingLong(Map.Entry::getValue))
+                .map(Map.Entry::getKey)
+                .orElse(null);
+
+    }
+
+
+
+}
