@@ -1,15 +1,17 @@
 package gym_tickets.controllers;
 
+import com.zaxxer.hikari.metrics.IMetricsTracker;
 import gym_tickets.controllers.utils.RESTError;
 import gym_tickets.entities.dtos.EntryLogDTO;
 import gym_tickets.services.EntryLogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping(path = "/gym_tickets/entryLog")
@@ -40,5 +42,30 @@ public class EntryLogController {
             return new ResponseEntity<>(new RESTError(1, "Exception occur: " + e.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/entriesNumber")
+    private ResponseEntity<?> getEntriesBetween(@RequestParam @DateTimeFormat (iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime startTime,
+                                                @RequestParam @DateTimeFormat (iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime){
+        try {
+            long x = entryLogService.getNumberOfEntriesBetween(startTime, endTime);
+            return new ResponseEntity<>(x, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new RESTError(1, "Exception occured: " + e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/most")
+    public ResponseEntity<?> getDateWithMostEntries() {
+        LocalDate date = entryLogService.getDateWithMostEntries();
+        if (date == null) {
+            return new ResponseEntity<>("No entries found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(date, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/least")
+    public ResponseEntity<?> leastEntries(){
+        return new ResponseEntity<>(entryLogService.getDateWithTheLeastEntries(), HttpStatus.OK);
     }
 }
