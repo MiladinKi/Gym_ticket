@@ -3,6 +3,7 @@ package gym_tickets.services;
 import gym_tickets.entities.EntryLogEntity;
 import gym_tickets.entities.TicketEntity;
 import gym_tickets.entities.UserEntity;
+import gym_tickets.entities.dtos.EntryCountDTO;
 import gym_tickets.entities.dtos.EntryLogDTO;
 import gym_tickets.mappers.EntryLogMapper;
 import gym_tickets.repositories.EntryLogRepository;
@@ -76,23 +77,27 @@ public class EntryLogService {
         return entryLogRepository.countByExitTimeBetween(startTime, endTime);
         }
 
-    public LocalDate getDateWithMostEntries() {
+    public EntryCountDTO getDateWithMostEntries() {
         List<Object[]> results = entryLogRepository.findDateWithMostEntries();
         if (results.isEmpty()) {
-            return null; // Ako nema rezultata, vrati null
+            return null;
         }
-        return ((java.sql.Date) results.get(0)[0]).toLocalDate(); // Konvertujemo u LocalDate
+        LocalDate date = ((java.sql.Date) results.get(0)[0]).toLocalDate();
+        Long count = (Long) results.get(0)[1];
+
+        return new EntryCountDTO(date, count);
     }
 
-    public LocalDate getDateWithTheLeastEntries(){
-        List <EntryLogEntity> entries = entryLogRepository.findAll();
+    public EntryCountDTO getDateWithTheLeastEntries(){
 
-        Map<LocalDate, Long> groupByDate = entries.stream().
-                collect(Collectors.groupingBy(e -> e.getEntryTime().toLocalDate(), Collectors.counting()));
-        return groupByDate.entrySet().stream().
-                min(Comparator.comparingLong(Map.Entry::getValue))
-                .map(Map.Entry::getKey)
-                .orElse(null);
+        List<Object[]> results = entryLogRepository.findDateWithLeastEntries();
+        if (results.isEmpty()) {
+            return null;
+        }
+        LocalDate date = ((java.sql.Date) results.get(0)[0]).toLocalDate();
+        Long count = (Long) results.get(0)[1];
+
+        return new EntryCountDTO(date, count);
 
     }
 

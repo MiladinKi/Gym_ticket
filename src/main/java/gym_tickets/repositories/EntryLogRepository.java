@@ -4,7 +4,6 @@ import gym_tickets.entities.EntryLogEntity;
 import gym_tickets.entities.TicketEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -23,6 +22,11 @@ public interface EntryLogRepository extends JpaRepository<EntryLogEntity, Intege
             "GROUP BY FUNCTION('DATE', e.entryTime) " +
             "ORDER BY COUNT(e) DESC")
     List<Object[]> findDateWithMostEntries();
+
+    @Query("SELECT DATE(e.entryTime), COUNT(e) FROM EntryLogEntity e " +
+            "GROUP BY DATE(e.entryTime) " +
+            "ORDER BY COUNT(e) ASC LIMIT 1")
+    List<Object[]> findDateWithLeastEntries();
 
     List<EntryLogEntity> findAllByOrderByEntryTimeAsc();
 //    List<EntryLogEntity> findAllByOrderByEntryTimeAsc();

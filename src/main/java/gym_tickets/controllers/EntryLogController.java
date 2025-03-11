@@ -2,6 +2,7 @@ package gym_tickets.controllers;
 
 import com.zaxxer.hikari.metrics.IMetricsTracker;
 import gym_tickets.controllers.utils.RESTError;
+import gym_tickets.entities.dtos.EntryCountDTO;
 import gym_tickets.entities.dtos.EntryLogDTO;
 import gym_tickets.services.EntryLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,15 +58,19 @@ public class EntryLogController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/most")
     public ResponseEntity<?> getDateWithMostEntries() {
-        LocalDate date = entryLogService.getDateWithMostEntries();
-        if (date == null) {
+        EntryCountDTO result = entryLogService.getDateWithMostEntries();
+        if (result == null) {
             return new ResponseEntity<>("No entries found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(date, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/least")
     public ResponseEntity<?> leastEntries(){
-        return new ResponseEntity<>(entryLogService.getDateWithTheLeastEntries(), HttpStatus.OK);
+        EntryCountDTO result = entryLogService.getDateWithTheLeastEntries();
+        if (result == null) {
+            return new ResponseEntity<>("No entries found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
